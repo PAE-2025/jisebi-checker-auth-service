@@ -43,8 +43,7 @@ const generateToken = (id, expiresIn) => {
 
 // Middleware untuk verifikasi JWT
 const authMiddleware = (req, res, next) => {
-    console.log(req.header('Authorization'))
-    const token = req.header('Authorization').replace("Bearer ", "");
+    const token = req.header('Authorization') ? req.header('Authorization').replace("Bearer ", "") : null;
     if (!token) return res.status(401).json({ message: 'No token, authorization denied' });
 
     try {
