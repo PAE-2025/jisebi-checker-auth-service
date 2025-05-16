@@ -44,7 +44,7 @@ router.post("/login", async (req, res) => {
 
     const accessToken = generateToken(user._id, "1h");
     const refreshToken = generateToken(user._id, "7d");
-    const expireAt = Math.floor(Date.now() / 1000) + 3600;
+    const expireAt = Math.floor(Date.now() / 1000) + 604800;
 
     return success(res, "Login berhasil", {
       accessToken,
@@ -67,7 +67,7 @@ router.post("/refresh", async (req, res) => {
       if (err) return error(res, "Refresh token tidak valid", err.message, 401);
 
       const accessToken = generateToken(decoded.id, "1h");
-      const expireAt = Math.floor(Date.now() / 1000) + 3600;
+      const expireAt = Math.floor(Date.now() / 1000) + 604800;
       return success(res, "Access token baru berhasil dibuat", {
         accessToken,
         expireAt,
