@@ -1,35 +1,36 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const rateLimit = require("express-rate-limit");
 require("dotenv").config();
+const express = require("express");
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+const connectDB = require("./config/db");
+const config = require("./config");
 
-const authRoutes = require("./routes/auth");
-const { success } = require("./utils/response");
-
+connectDB();
 const app = express();
+
+// Middleware
 app.use(express.json());
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: "Terlalu banyak permintaan, coba lagi nanti.",
-});
-
-app.use("/auth/login", limiter);
-
-// MongoDB
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.error("MongoDB Error:", err));
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.get("/", (req, res) => success(res, "AUTH SERVICE JISEBI CHECKER"));
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
-// Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.use((err, req, res, next) => {
+  console.error("Error handler:", err);
+  res.status(err.statusCode || 500).json({
+    message: err.message || "Terjadi kesalahan server",
+    error: process.env.NODE_ENV === "development" ? err : {},
+  });
+});
+
+app.get("/", (req, res) => {
+  res.send("Selamat datang di API Auth!");
+});
+
+const PORT = config.port;
+app.listen(PORT, () => {
+  console.log(`Server berjalan di port ${PORT}`);
+});
+
+module.exports = app;
