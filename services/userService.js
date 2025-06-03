@@ -108,8 +108,8 @@ const updateUser = async (userId, updateData) => {
   const updatedUser = await User.findByIdAndUpdate(
     userId,
     { $set: updates },
-    { new: true, runValidators: true, fields: { password: 0 } } // fields: { password: 0 } tidak selalu bekerja di findByIdAndUpdate untuk Mongoose < 7
-  ).lean(); // Jika password masih muncul, seleksi manual setelahnya.
+    { new: true, runValidators: true, fields: { password: 0 } }
+  ).lean();
 
   if (!updatedUser) {
     const err = new Error("Pengguna tidak ditemukan");
@@ -139,7 +139,7 @@ const deleteUser = async (userIdToDelete, currentUserId) => {
     err.statusCode = 404;
     throw err;
   }
-  return { message: "Pengguna berhasil dihapus" }; // atau return user (tanpa password)
+  return { message: "Pengguna berhasil dihapus" };
 };
 
 module.exports = {
