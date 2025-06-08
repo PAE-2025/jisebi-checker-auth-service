@@ -8,7 +8,7 @@ const router = express.Router();
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 100,
   message: { message: "Terlalu banyak percobaan login, coba lagi nanti" },
   standardHeaders: true,
   legacyHeaders: false,
